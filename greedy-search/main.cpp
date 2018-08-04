@@ -1,21 +1,36 @@
-#include <vector>
 #include <iostream>
+#include <string>
+
+#include <iterator>
+#include <vector>
+#include <array>
+#include <map>
 
 using namespace std;
-using std::vector;
+
+
+void see(string param[], int size)
+{
+	for(int i = 0; i < size; i++)
+		cout << param[i] << "*";
+	cout << endl;
+}
 
 int main()
 {
-	vector<int> v;
+	int n;
+	cout << "Informe quantas cidades: ";
+	cin >> n;
 
-	v.push_back(4);
-	v.push_back(2);
-	v.push_back(3);
-	v[0] = 1;
+	string cities[n];
+	int matrizAdj[n][n];
 
-	for (int i = 0; i < v.size(); i++) {
-		cout << v[i] << endl;
+	for(int i=0; i<n; i++){
+		string name;
+		cout << i+1 << "ª cidade: ";
+		cin >> name;
+		cities[i] = name;
 	}
-	
+	see(cities, n);
 	return 0;
 }
