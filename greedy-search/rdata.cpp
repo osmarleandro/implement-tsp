@@ -7,20 +7,46 @@ using std::endl;
 using std::getline;
 using std::string;
 
+#include <fstream>
+using std::ifstream;
+using std::ofstream;
+
+void reading();
+void writing();
+
 int main()
 {
-  string anyword;
-  while (anyword.compare("sair") != 0)
-  {
-
-    cout << "Digite uma palavra: ";
-    getline(cin, anyword);
-
-    for (int i = 0; i < anyword.length(); i++)
-    {
-      cout << anyword[i] << "-" << (int)anyword[i] << endl;
-    }
-    cout << endl;
-  }
+  writing();
+  reading();
   return 0;
+}
+
+void reading()
+{
+  string line;
+  ifstream myfile("example.txt");
+  if (myfile.is_open())
+  {
+    while (getline(myfile, line))
+    {
+      cout << line << '\n';
+    }
+    myfile.close();
+  }
+
+  else
+    cout << "Unable to open file";
+}
+
+void writing()
+{
+  ofstream myfile("example.txt");
+  if (myfile.is_open())
+  {
+    myfile << "This is a line.\n";
+    myfile << "This is another line.\n";
+    myfile.close();
+  }
+  else
+    cout << "Unable to open file";
 }
