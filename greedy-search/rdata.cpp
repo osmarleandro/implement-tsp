@@ -11,12 +11,15 @@ using std::string;
 using std::ifstream;
 using std::ofstream;
 
+#include <cmath>
+using std::sqrt;
+
 void reading();
 void writing();
 
 int main()
 {
-  writing();
+  //writing();
   reading();
   return 0;
 }
@@ -24,14 +27,36 @@ int main()
 void reading()
 {
   string line;
+
   ifstream myfile("example.txt");
   if (myfile.is_open())
   {
-    while (getline(myfile, line))
+
+    getline(myfile, line);
+
+    std::string::size_type sz;
+
+    int n = std::stoi(line, &sz);
+    int madj[n][n];
+
+    for (int i = 0; i < n; i++)
     {
-      cout << line << '\n';
+      for (int j = 0; j < n; j++)
+      {
+        getline(myfile, line);
+        madj[i][j] = std::stoi(line, &sz);
+      }
     }
     myfile.close();
+
+    for (int i = 0; i < n; i++)
+    {
+      for (int j = 0; j < n; j++)
+      {
+        cout << madj[i][j];
+      }
+      cout << endl;
+    }
   }
 
   else
