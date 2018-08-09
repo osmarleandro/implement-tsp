@@ -5,6 +5,7 @@ using std::endl;
 
 #include <string>
 using std::getline;
+using std::stoi;
 using std::string;
 
 #include <fstream>
@@ -12,66 +13,83 @@ using std::ifstream;
 using std::ofstream;
 
 #include <cmath>
-using std::sqrt;
+using std::pow;
 
-void reading();
-void writing();
+int **reading();
+void see(int **adj, int n);
+void brute_force(int **adj, int n);
 
 int main()
 {
-  //writing();
-  reading();
+  int **adj = reading();
+
   return 0;
 }
 
-void reading()
+int **reading()
 {
+  string::size_type sz;
+  ifstream instance;
   string line;
+  int **adj, n;
 
-  ifstream myfile("example.txt");
-  if (myfile.is_open())
+  instance.open("instance.tsp");
+  if (instance.is_open())
   {
-
-    getline(myfile, line);
-
-    std::string::size_type sz;
-
-    int n = std::stoi(line, &sz);
-    int madj[n][n];
+    getline(instance, line);
+    n = stoi(line, &sz);
+    adj = new int *[n];
 
     for (int i = 0; i < n; i++)
     {
+      adj[i] = new int[n];
       for (int j = 0; j < n; j++)
       {
-        getline(myfile, line);
-        madj[i][j] = std::stoi(line, &sz);
+        getline(instance, line);
+        adj[i][j] = stoi(line, &sz);
       }
     }
-    myfile.close();
-
-    for (int i = 0; i < n; i++)
-    {
-      for (int j = 0; j < n; j++)
-      {
-        cout << madj[i][j];
-      }
-      cout << endl;
-    }
+    instance.close();
   }
 
   else
     cout << "Unable to open file";
+
+  see(adj, n);
+  return adj;
 }
 
-void writing()
+void see(int **adj, int n)
 {
-  ofstream myfile("example.txt");
-  if (myfile.is_open())
+  for (int i = 0; i < n; i++)
   {
-    myfile << "This is a line.\n";
-    myfile << "This is another line.\n";
-    myfile.close();
+    for (int j = 0; j < n; j++)
+    {
+      cout << adj[i][j] << "\t";
+    }
+    cout << endl;
   }
-  else
-    cout << "Unable to open file";
+}
+
+void brute_force(int **adj, int n)
+{
+  int cost = INFINITY;
+  int sol[] = {};
+
+  // calculing cycle cost
+  for (int i = 0; i < n; i++)
+  {
+    for (int j = 0; j < n; j++)
+    {
+    }
+  }
+}
+
+void cost(int **adj, int *sol, int n)
+{
+  int total_cost = 0;
+  for (int i = 0; i < n - 1; i++)
+  {
+    total_cost = total_cost + adj[sol[i]][sol[i + 1]];
+  }
 }
