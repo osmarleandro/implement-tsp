@@ -12,8 +12,11 @@ using std::string;
 using std::ifstream;
 using std::ofstream;
 
-#include <algorithm>
+#include <algorithm>    // std::next_permutation, std::sort
 using std::copy;
+using std::next_permutation;
+using std::sort;
+
 
 #include <cmath>
 using std::pow;
@@ -29,6 +32,7 @@ int *brute_force(int **adj, int n);
 int *generateSolution(int n);
 int cost(int **adj, int *sol, int n);
 int *swap(int *sol, int n, int i, int j);
+int *unshift(int *sol, int n);
 
 int main()
 {
@@ -92,7 +96,7 @@ void see(int *vector, int n)
 int *brute_force(int **adj, int n)
 {
   // initial solution and cost [ 0, 1, 2, 3, 4]
-  int iter = 0;
+  //int iter = 0;
   int *bestSol = generateSolution(n);
   int *iniSol = generateSolution(n);
   //copy(bestSol, bestSol + n, iniSol);
@@ -103,26 +107,32 @@ int *brute_force(int **adj, int n)
   cout << "Initial solution: ";
   see(bestSol, n);
   cout << endl;
+  int iter = 0;
 
   // swapping every city and calculating cost
   for (int i = 0; i < n - 1; i++)
   {
     for (int j = i + 1; j < n; j++)
     {
-      int *current = swap(iniSol, n, i, j);
-      see(current, n);
-      int currentCost = cost(adj, current, n);
-      if (currentCost < bestCost)
+      int *swapped = swap(iniSol, n, i, j);
+
+      for (int k = 0; k < n; k++)
       {
-        copy(current, current + n, bestSol);
-        bestCost = currentCost;
+        // calculing cost of current solution swapped and unshifted
+        int currentCost = cost(adj, swapped, n);
+        if (currentCost < bestCost)
+        {
+          copy(swapped, swapped + n, bestSol);
+          bestCost = currentCost;
+        }
+        swapped = unshift(swapped, n);
+        iter++;
       }
-      iter++;
     }
   }
 
   // show the final result
-  cout << "Iterations: " << iter;
+  cout << "Iterations: " << iter << endl;
   cout << "\nBest solution cost: " << bestCost << endl;
   cout << "Best solution: ";
   see(bestSol, n);
@@ -159,5 +169,18 @@ int *swap(int *sol, int n, int i, int j)
   int tmp = vector[i];
   vector[i] = vector[j];
   vector[j] = tmp;
+  return vector;
+}
+
+int *unshift(int *sol, int n)
+{
+  const int LIMIT = n - 1;
+  int *vector = new int[n];
+  vector[0] = sol[LIMIT];
+
+  for (int i = 1; i <= LIMIT; i++)
+    vector[i] = sol[i - 1];
+
+  see(vector, n);
   return vector;
 }
