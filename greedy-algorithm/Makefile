@@ -1,4 +1,4 @@
-OPTIONS = -c -O3
+OPTIONS = -c -O3 -std=c++11
 COMP = g++
 
 tsp: rdata.o main.o
