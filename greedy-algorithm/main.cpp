@@ -13,6 +13,11 @@ using std::ofstream;
 #include <algorithm>
 using std::find;
 
+#include <limits>
+using std::numeric_limits;
+
+#include <time.h>
+
 void see(double **matrix, int n);
 void see(int *vector, int n);
 
@@ -27,11 +32,14 @@ int main(int argc, char **argv)
   int dimension;
 
   readData(argc, argv, &dimension, &matrixAdj);
-  see(matrixAdj, dimension);
+  //see(matrixAdj, dimension);
 
-  int startCity = 14;
+  int startCity = 10;
+  clock_t tStart = clock();
   int *path = greedy(matrixAdj, dimension, startCity);
+
   see(path, dimension);
+  cout << "Tempo de execução: " << (double)(clock() - tStart) / CLOCKS_PER_SEC << " s" << endl;
 
   // Deallocate memory
   delete[] matrixAdj, path;
@@ -52,8 +60,12 @@ void see(double **matrix, int dimension)
 void see(int *vector, int dimension)
 {
   cout << "The path of " << dimension << " cities" << endl;
-  for (int i = 0; i < dimension; i++)
-    cout << vector[i] << "\t";
+  for (size_t i = 0; i < dimension; i++)
+  {
+    cout << i + 1 << ": " << vector[i] << "    ";
+    if (((i + 1) % 10) == 0)
+      cout << "\n";
+  }
   cout << endl;
 }
 
@@ -68,19 +80,20 @@ int *greedy(double **adj, int dimension, int start)
   return path;
 }
 
-/* For the best neighbor search, use the first neighbor 
-  * as a comparison parameter for the others. 
-  * */
+/** 
+ * For the best neighbor search, use the infinity neighbor 
+ * as a comparison parameter for the others.
+ * */
 int bestNeighbor(double **adj, int dimension, int *path, int city)
 {
-  double bestNeighbor = INFINITY;
-  double bestCost = INFINITY;
+  double bestNeighbor = numeric_limits<double>::infinity();
+  double bestCost = numeric_limits<double>::infinity();
 
   for (size_t i = 1; i <= dimension; i++)
   {
     if (visited(path, path + dimension, i) == 0 && (city != i))
     {
-      int neighborCost = adj[city][i];
+      double neighborCost = adj[city][i];
       if (neighborCost <= bestCost)
       {
         bestNeighbor = i;
