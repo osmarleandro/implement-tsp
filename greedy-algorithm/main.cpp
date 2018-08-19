@@ -1,4 +1,5 @@
 #include "rdata.h"
+#include <time.h>
 
 #include <iostream>
 using std::cin;
@@ -16,10 +17,10 @@ using std::find;
 #include <limits>
 using std::numeric_limits;
 
-#include <time.h>
-
-void see(double **matrix, int n);
-void see(int *vector, int n);
+void timeExecution(clock_t startTime);
+void see(double **matrix, int dimension);
+void see(int *vector, int dimension);
+void seeCost(int *path, int dimension, double **matrix);
 
 int *greedy(double **adj, int dimension, int start);
 int bestNeighbor(double **adj, int dimension, int *path, int city);
@@ -27,23 +28,29 @@ bool visited(const int *begin, const int *end, int city);
 
 int main(int argc, char **argv)
 {
-
   double **matrixAdj;
   int dimension;
 
+  // Reading the data of instance passed by parameter
   readData(argc, argv, &dimension, &matrixAdj);
-  //see(matrixAdj, dimension);
 
-  int startCity = 10;
+  int startCity = 666;
   clock_t tStart = clock();
   int *path = greedy(matrixAdj, dimension, startCity);
 
+  // Show the solution path
   see(path, dimension);
-  cout << "Tempo de execução: " << (double)(clock() - tStart) / CLOCKS_PER_SEC << " s" << endl;
+  seeCost(path, dimension, matrixAdj);
+  timeExecution(tStart);
 
   // Deallocate memory
   delete[] matrixAdj, path;
   return 0;
+}
+
+void timeExecution(clock_t startTime)
+{
+  cout << "Tempo de execução: " << (double)(clock() - startTime) / CLOCKS_PER_SEC << " s" << endl;
 }
 
 void see(double **matrix, int dimension)
@@ -67,6 +74,17 @@ void see(int *vector, int dimension)
       cout << "\n";
   }
   cout << endl;
+}
+
+void seeCost(int *path, int dimension, double **matrix)
+{
+  double totalCost = 0;
+  for (size_t i = 0; i < dimension - 1; i++)
+    totalCost = totalCost + matrix[path[i]][path[i + 1]];
+
+  // Add symmetric cost of last city to first city
+  totalCost = totalCost + matrix[path[0]][path[dimension - 1]];
+  cout << "The total cost of path was " << totalCost << endl;
 }
 
 int *greedy(double **adj, int dimension, int start)
