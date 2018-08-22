@@ -39,25 +39,27 @@ int main(int argc, char **argv)
   // Reading the data of instance passed by parameter
   readData(argc, argv, &dimension, &matrixAdj);
 
-  // Starting greedy algorithm looking for the best neighbor
+  // Starting the greedy algorithm looking for the best neighbor
   clock_t startTimeGreedy = clock();
   int *path = greedy(matrixAdj, dimension, startCity);
   double totalTime = timeExecution(startTimeGreedy);
-
-  see(path, dimension);
   double totalCost = cost(path, dimension, matrixAdj);
 
-  // Show the solution path
+  // See the greedy solution
   cout << "The total cost of path was " << totalCost << endl;
-  cout << "Tempo de execução: " << totalTime << " s" << endl;
+  see(path, dimension);
+  cout << "Execution time: " << totalTime << " s" << endl;
 
+  // Starting the brute force algorithm
   clock_t startTimeBrute = clock();
   int *bestPath = brute_force(matrixAdj, dimension, path);
   totalTime = timeExecution(startTimeBrute);
-
   double bestCost = cost(bestPath, dimension, matrixAdj);
+
+  // See the best solution
   cout << "The best cost of path is " << bestCost << endl;
-  cout << "Tempo de execução: " << totalTime << " s" << endl;
+  see(bestPath, dimension);
+  cout << "Execution time: " << totalTime << " s" << endl;
 
   // Deallocate memory
   delete[] matrixAdj, path;
