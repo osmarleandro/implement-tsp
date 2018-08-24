@@ -1,5 +1,6 @@
 #include "rdata.h"
 #include <time.h>
+#include <brute.h>
 
 #include <iostream>
 using std::cin;
@@ -12,10 +13,7 @@ using std::ifstream;
 using std::ofstream;
 
 #include <algorithm>
-using std::copy;
 using std::find;
-using std::next_permutation;
-using std::sort;
 
 #include <limits>
 using std::numeric_limits;
@@ -28,7 +26,6 @@ double cost(int *path, int dimension, double **matrix);
 int *greedy(double **adj, int dimension, int start);
 int bestNeighbor(double **adj, int dimension, int *path, int city);
 bool visited(const int *begin, const int *end, int city);
-int *brute_force(double **adj, int n, int *currentSolution);
 
 int main(int argc, char **argv)
 {
@@ -51,8 +48,9 @@ int main(int argc, char **argv)
   cout << "Execution time: " << totalTime << " s" << endl;
 
   // Starting the brute force algorithm
+  BruteForce bf;
   clock_t startTimeBrute = clock();
-  int *bestPath = brute_force(matrixAdj, dimension, path);
+  int *bestPath = bf.solve(matrixAdj, dimension, path);
   totalTime = timeExecution(startTimeBrute);
   double bestCost = cost(bestPath, dimension, matrixAdj);
 
@@ -143,28 +141,4 @@ int bestNeighbor(double **adj, int dimension, int *path, int city)
 bool visited(const int *begin, const int *end, int city)
 {
   return find(begin, end, city) != end;
-}
-
-int *brute_force(double **adj, int n, int *bestSol)
-{
-  double iter = 1;
-  double bestCost = cost(bestSol, n, adj);
-
-  int *current = new int[n];
-  copy(bestSol, bestSol + n, current);
-  sort(current, current + n);
-
-  while (next_permutation(current, current + n))
-  {
-    // calculing cost of current solution for next permutation
-    double currentCost = cost(current, n, adj);
-    if (currentCost < bestCost)
-    {
-      copy(current, current + n, bestSol);
-      bestCost = currentCost;
-    }
-    iter++;
-  };
-  cout << "Iterations: " << iter << endl;
-  return bestSol;
 }
