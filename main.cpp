@@ -1,6 +1,8 @@
-#include "rdata.h"
 #include <time.h>
-#include <brute.h>
+
+#include "./rdata/rdata.h"
+#include "./brute-force/brute.h"
+#include "./greedy-algorithm/greedy.h"
 
 #include <iostream>
 using std::cin;
@@ -12,20 +14,9 @@ using std::size_t;
 using std::ifstream;
 using std::ofstream;
 
-#include <algorithm>
-using std::find;
-
-#include <limits>
-using std::numeric_limits;
-
 double timeExecution(clock_t startTime);
 void see(double **matrix, int dimension);
 void see(int *vector, int dimension);
-double cost(int *path, int dimension, double **matrix);
-
-int *greedy(double **adj, int dimension, int start);
-int bestNeighbor(double **adj, int dimension, int *path, int city);
-bool visited(const int *begin, const int *end, int city);
 
 int main(int argc, char **argv)
 {
@@ -48,9 +39,8 @@ int main(int argc, char **argv)
   cout << "Execution time: " << totalTime << " s" << endl;
 
   // Starting the brute force algorithm
-  BruteForce bf;
   clock_t startTimeBrute = clock();
-  int *bestPath = bf.solve(matrixAdj, dimension, path);
+  int *bestPath = bruteForce(matrixAdj, dimension, path);
   totalTime = timeExecution(startTimeBrute);
   double bestCost = cost(bestPath, dimension, matrixAdj);
 
@@ -90,55 +80,4 @@ void see(int *vector, int dimension)
       cout << "\n";
   }
   cout << endl;
-}
-
-double cost(int *path, int dimension, double **matrix)
-{
-  double totalCost = 0;
-  for (size_t i = 0; i < dimension - 1; i++)
-    totalCost = totalCost + matrix[path[i]][path[i + 1]];
-
-  // Add symmetric cost of last city to first city
-  totalCost = totalCost + matrix[path[0]][path[dimension - 1]];
-  return totalCost;
-}
-
-int *greedy(double **adj, int dimension, int start)
-{
-  int *path = new int[dimension];
-  path[0] = start;
-
-  for (size_t i = 1; i < dimension; i++)
-    path[i] = bestNeighbor(adj, dimension, path, path[i - 1]);
-
-  return path;
-}
-
-/** 
- * For the best neighbor search, use the infinity neighbor 
- * as a comparison parameter for the others.
- * */
-int bestNeighbor(double **adj, int dimension, int *path, int city)
-{
-  double bestNeighbor = numeric_limits<double>::infinity();
-  double bestCost = numeric_limits<double>::infinity();
-
-  for (size_t i = 1; i <= dimension; i++)
-  {
-    if (visited(path, path + dimension, i) == 0 && (city != i))
-    {
-      double neighborCost = adj[city][i];
-      if (neighborCost <= bestCost)
-      {
-        bestNeighbor = i;
-        bestCost = neighborCost;
-      }
-    }
-  }
-  return bestNeighbor;
-}
-
-bool visited(const int *begin, const int *end, int city)
-{
-  return find(begin, end, city) != end;
 }
