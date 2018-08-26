@@ -2,7 +2,7 @@
 
 #include "./rdata/rdata.h"
 #include "./brute-force/brute.h"
-#include "./greedy-algorithm/greedy.h"
+#include "./greedy-algorithm/nearest-neighbor/nearest.h"
 
 #include <iostream>
 using std::cin;
@@ -29,7 +29,7 @@ int main(int argc, char **argv)
 
   // Starting the greedy algorithm looking for the best neighbor
   clock_t startTimeGreedy = clock();
-  int *path = greedy(matrixAdj, dimension, startCity);
+  int *path = solveNearest(matrixAdj, dimension, startCity);
   double totalTime = timeExecution(startTimeGreedy);
   double totalCost = cost(path, dimension, matrixAdj);
 
@@ -38,6 +38,7 @@ int main(int argc, char **argv)
   see(path, dimension);
   cout << "Execution time: " << totalTime << " s" << endl;
 
+  /*
   // Starting the brute force algorithm
   clock_t startTimeBrute = clock();
   int *bestPath = bruteForce(matrixAdj, dimension, path);
@@ -48,6 +49,7 @@ int main(int argc, char **argv)
   cout << "The best cost of path is " << bestCost << endl;
   see(bestPath, dimension);
   cout << "Execution time: " << totalTime << " s" << endl;
+  */
 
   // Deallocate memory
   delete[] matrixAdj, path;

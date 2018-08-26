@@ -13,9 +13,9 @@ bool visited(const int *begin, const int *end, int city)
  * For the best neighbor search, use the infinity neighbor 
  * as a comparison parameter for the others.
  * */
-int bestNeighbor(double **adj, int dimension, int *path, int city)
+int nearestNeighbor(double **adj, int dimension, int *path, int city)
 {
-  double bestNeighbor = numeric_limits<double>::infinity();
+  int bestNeighbor = numeric_limits<int>::infinity();
   double bestCost = numeric_limits<double>::infinity();
 
   for (size_t i = 1; i <= dimension; i++)
@@ -37,13 +37,13 @@ int bestNeighbor(double **adj, int dimension, int *path, int city)
  * This algorithm search the best neighbor of the current city, 
  * then make next until the last city.
  * */
-int *greedy(double **adj, int dimension, int start)
+int *solveNearest(double **adj, int dimension, int start)
 {
   int *path = new int[dimension];
   path[0] = start;
 
   for (size_t i = 1; i < dimension; i++)
-    path[i] = bestNeighbor(adj, dimension, path, path[i - 1]);
+    path[i] = nearestNeighbor(adj, dimension, path, path[i - 1]);
 
   return path;
 }
