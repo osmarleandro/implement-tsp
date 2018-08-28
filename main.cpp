@@ -5,7 +5,6 @@
 
 #include <iostream>
 using std::cin;
-using std::copy;
 using std::cout;
 using std::endl;
 using std::size_t;
@@ -35,7 +34,7 @@ int main(int argc, char **argv)
   double totalTime = timeExecution(startTime);
   double totalCost = cost(path, dimension, matrixAdj);
   // See the greedy solution
-  cout << "The nearest neighbor algorithm cost was: " << totalCost << endl;
+  cout << "\nThe nearest neighbor algorithm cost was: " << totalCost << endl;
   see(path, dimension);
   cout << "Execution time: " << totalTime << " s" << endl;
 
@@ -43,15 +42,12 @@ int main(int argc, char **argv)
    * Starting the bellmore-nemhauser algorithm 
    * */
   startTime = clock();
-  list<int> bnSolution = solveNearestEdge(matrixAdj, dimension, startCity);
+  int *bnPath = solveNearestEdge(matrixAdj, dimension, startCity);
   totalTime = timeExecution(startTime);
-  // Converting list to array
-  int bnPath[dimension];
-  copy(bnSolution.begin(), bnSolution.end(), bnPath);
   // Calculating cost os bn-heuristic
   double costBn = cost(bnPath, dimension, matrixAdj);
   // See the bn-heuristic solution
-  cout << "The bellmore-nemhauser cost was: " << costBn << endl;
+  cout << "\nThe bellmore-nemhauser cost was: " << costBn << endl;
   see(bnPath, dimension);
   cout << "Execution time: " << totalTime << " s" << endl;
 
@@ -96,7 +92,7 @@ void see(int *vector, int dimension)
   cout << "The path of " << dimension << " cities" << endl;
   for (size_t i = 0; i < dimension; i++)
   {
-    cout << i + 1 << ": " << vector[i] << "    ";
+    cout << i + 1 << ": " << vector[i] << "\t";
     if (((i + 1) % 10) == 0)
       cout << "\n";
   }

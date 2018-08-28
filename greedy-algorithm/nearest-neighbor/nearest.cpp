@@ -23,7 +23,7 @@ int nearestNeighbor(double **adj, int dimension, int *path, int city)
     if (visited(path, path + dimension, i) == 0 && (city != i))
     {
       double neighborCost = adj[city][i];
-      if (neighborCost <= bestCost)
+      if (neighborCost <= bestCost && neighborCost > 0)
       {
         bestNeighbor = i;
         bestCost = neighborCost;

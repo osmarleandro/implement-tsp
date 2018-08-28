@@ -2,6 +2,7 @@
 using std::list;
 
 #include <algorithm>
+using std::copy;
 using std::find;
 
 #include <limits>
@@ -11,19 +12,21 @@ using std::numeric_limits;
 using std::cout;
 using std::size_t;
 
-int nearestNeighbor(double **adj, int dimension, list<int> path, int city)
+#include <iterator>
+using std::copy;
+
+int nearestNeighborEdge(double **adj, int dimension, list<int> path, int city)
 {
-  int bestNeighbor = numeric_limits<int>::infinity();
+  double bestNeighbor = numeric_limits<double>::infinity();
   double bestCost = numeric_limits<double>::infinity();
 
-  list<int>::iterator pathIterator = path.begin();
   for (size_t i = 1; i <= dimension; i++)
   {
-    bool visited = find(path.begin(), path.end(), city) != path.end();
+    bool visited = find(path.begin(), path.end(), i) != path.end();
     if (visited == 0 && (city != i))
     {
-      double neighborCost = adj[i][city];
-      if (neighborCost <= bestCost)
+      double neighborCost = adj[city][i];
+      if (neighborCost <= bestCost && neighborCost > 0)
       {
         bestNeighbor = i;
         bestCost = neighborCost;
@@ -33,20 +36,19 @@ int nearestNeighbor(double **adj, int dimension, list<int> path, int city)
   return bestNeighbor;
 }
 
-list<int> solveNearestEdge(double **adj, int dimension, int start)
+int *solveNearestEdge(double **adj, int dimension, int start)
 {
   list<int> path;
   path.push_back(start);
   size_t iteration = 1;
 
-  while (iteration < dimension)
+  while (iteration++ < dimension)
   {
+    int beginEdge = path.front();
+    int endEdge = path.back();
 
-    int beginEdge = *path.begin();
-    int endEdge = *path.end();
-
-    int bestBeginNeighbor = nearestNeighbor(adj, dimension, path, beginEdge);
-    int bestEndNeighbor = nearestNeighbor(adj, dimension, path, endEdge);
+    int bestBeginNeighbor = nearestNeighborEdge(adj, dimension, path, beginEdge);
+    int bestEndNeighbor = nearestNeighborEdge(adj, dimension, path, endEdge);
 
     double costNeighborBegin = adj[beginEdge][bestBeginNeighbor];
     double costNeighborEnd = adj[endEdge][bestEndNeighbor];
@@ -56,14 +58,9 @@ list<int> solveNearestEdge(double **adj, int dimension, int start)
 
     else
       path.push_front(bestBeginNeighbor);
-
-    iteration++;
-    cout << "After inserting is : ";
-    for (list<int>::iterator i = path.begin(); i != path.end(); i++)
-      cout << *i << " ";
-    cout << "\n";
   }
-  cout << "Iterations: " << iteration << "\n";
-
-  return path;
+  // Converting list to array
+  int *bnPath = new int[path.size()];
+  copy(path.begin(), path.end(), bnPath);
+  return bnPath;
 }
