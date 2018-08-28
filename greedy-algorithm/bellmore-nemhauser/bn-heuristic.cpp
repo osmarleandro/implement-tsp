@@ -8,6 +8,7 @@ using std::find;
 using std::numeric_limits;
 
 #include <iostream>
+using std::cout;
 using std::size_t;
 
 int nearestNeighbor(double **adj, int dimension, list<int> path, int city)
@@ -32,7 +33,7 @@ int nearestNeighbor(double **adj, int dimension, list<int> path, int city)
   return bestNeighbor;
 }
 
-list<int> solveNextNearestEdge(double **adj, int dimension, int start)
+list<int> solveNearestEdge(double **adj, int dimension, int start)
 {
   list<int> path;
   path.push_back(start);
@@ -57,7 +58,12 @@ list<int> solveNextNearestEdge(double **adj, int dimension, int start)
       path.push_front(bestBeginNeighbor);
 
     iteration++;
+    cout << "After inserting is : ";
+    for (list<int>::iterator i = path.begin(); i != path.end(); i++)
+      cout << *i << " ";
+    cout << "\n";
   }
+  cout << "Iterations: " << iteration << "\n";
 
   return path;
 }

@@ -1,11 +1,11 @@
-#include <time.h>
-
 #include "./rdata/rdata.h"
 #include "./brute-force/brute.h"
 #include "./greedy-algorithm/nearest-neighbor/nearest.h"
+#include "./greedy-algorithm/bellmore-nemhauser/bn-heuristic.h"
 
 #include <iostream>
 using std::cin;
+using std::copy;
 using std::cout;
 using std::endl;
 using std::size_t;
@@ -14,6 +14,8 @@ using std::size_t;
 using std::ifstream;
 using std::ofstream;
 
+#include <time.h>
+
 double timeExecution(clock_t startTime);
 void see(double **matrix, int dimension);
 void see(int *vector, int dimension);
@@ -21,25 +23,42 @@ void see(int *vector, int dimension);
 int main(int argc, char **argv)
 {
   double **matrixAdj;
-  int dimension;
-  int startCity = 1;
-
+  int dimension, startCity = 1;
   // Reading the data of instance passed by parameter
   readData(argc, argv, &dimension, &matrixAdj);
 
-  // Starting the greedy algorithm looking for the best neighbor
-  clock_t startTimeGreedy = clock();
+  /** 
+   * Starting the greedy algorithm looking for the best neighbor 
+   * */
+  clock_t startTime = clock();
   int *path = solveNearest(matrixAdj, dimension, startCity);
-  double totalTime = timeExecution(startTimeGreedy);
+  double totalTime = timeExecution(startTime);
   double totalCost = cost(path, dimension, matrixAdj);
-
   // See the greedy solution
-  cout << "The total cost of path was " << totalCost << endl;
+  cout << "The nearest neighbor algorithm cost was: " << totalCost << endl;
   see(path, dimension);
   cout << "Execution time: " << totalTime << " s" << endl;
 
+  /** 
+   * Starting the bellmore-nemhauser algorithm 
+   * */
+  startTime = clock();
+  list<int> bnSolution = solveNearestEdge(matrixAdj, dimension, startCity);
+  totalTime = timeExecution(startTime);
+  // Converting list to array
+  int bnPath[dimension];
+  copy(bnSolution.begin(), bnSolution.end(), bnPath);
+  // Calculating cost os bn-heuristic
+  double costBn = cost(bnPath, dimension, matrixAdj);
+  // See the bn-heuristic solution
+  cout << "The bellmore-nemhauser cost was: " << costBn << endl;
+  see(bnPath, dimension);
+  cout << "Execution time: " << totalTime << " s" << endl;
+
   /*
-  // Starting the brute force algorithm
+  /** 
+   * Starting the brute force algorithm 
+   * 
   clock_t startTimeBrute = clock();
   int *bestPath = bruteForce(matrixAdj, dimension, path);
   totalTime = timeExecution(startTimeBrute);
