@@ -1,23 +1,13 @@
+#include "./util/common.h"
 #include "./rdata/rdata.h"
 #include "./brute-force/brute.h"
 #include "./greedy-algorithm/nearest-neighbor/nearest.h"
 #include "./greedy-algorithm/bellmore-nemhauser/bn-heuristic.h"
+#include "./greedy-algorithm/cheaper-insertion/cheaper.h"
 
 #include <iostream>
-using std::cin;
 using std::cout;
 using std::endl;
-using std::size_t;
-
-#include <fstream>
-using std::ifstream;
-using std::ofstream;
-
-#include <time.h>
-
-double timeExecution(clock_t startTime);
-void see(double **matrix, int dimension);
-void see(int *vector, int dimension);
 
 int main(int argc, char **argv)
 {
@@ -44,13 +34,22 @@ int main(int argc, char **argv)
   startTime = clock();
   int *bnPath = solveNearestEdge(matrixAdj, dimension, startCity);
   totalTime = timeExecution(startTime);
-  // Calculating cost os bn-heuristic
   double costBn = cost(bnPath, dimension, matrixAdj);
   // See the bn-heuristic solution
   cout << "\nThe bellmore-nemhauser cost was: " << costBn << endl;
   see(bnPath, dimension);
   cout << "Execution time: " << totalTime << " s" << endl;
 
+  /**
+   * Starting cheaper insertion
+  */
+  startTime = clock();
+  int *ciPath = cheaperInsertion(matrixAdj, dimension, startCity);
+  totalTime = timeExecution(startTime);
+  double costCi = cost(ciPath, 2, matrixAdj);
+  cout << "\nThe cheaper insertion cost was: " << costCi << endl;
+  see(ciPath, 2);
+  cout << "Execution time: " << totalTime << " s" << endl;
   /*
   /** 
    * Starting the brute force algorithm 
@@ -69,32 +68,4 @@ int main(int argc, char **argv)
   // Deallocate memory
   delete[] matrixAdj, path;
   return 0;
-}
-
-double timeExecution(clock_t startTime)
-{
-  return (double)(clock() - startTime) / CLOCKS_PER_SEC;
-}
-
-void see(double **matrix, int dimension)
-{
-  cout << "The Matrix of " << dimension << " dimensions" << endl;
-  for (size_t i = 1; i <= dimension; i++)
-  {
-    for (size_t j = 1; j <= dimension; j++)
-      cout << matrix[i][j] << "\t";
-    cout << endl;
-  }
-}
-
-void see(int *vector, int dimension)
-{
-  cout << "The path of " << dimension << " cities" << endl;
-  for (size_t i = 0; i < dimension; i++)
-  {
-    cout << i + 1 << ": " << vector[i] << "\t";
-    if (((i + 1) % 10) == 0)
-      cout << "\n";
-  }
-  cout << endl;
 }

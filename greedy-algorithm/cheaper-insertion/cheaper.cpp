@@ -1,3 +1,5 @@
+#include "../../util/common.h"
+
 #include <list>
 using std::list;
 
@@ -8,14 +10,8 @@ using std::find;
 #include <limits>
 using std::numeric_limits;
 
-#include <iostream>
-using std::cout;
-using std::size_t;
-
 #include <iterator>
 using std::copy;
-
-#include "../../common/common.h"
 
 list<int> generateSubroute(double **adj, int dimension, int start)
 {

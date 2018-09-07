@@ -5,7 +5,7 @@ using std::list;
 using std::cout;
 using std::size_t;
 
-#include "../../common/common.h"
+#include "../../util/common.h"
 
 int *solveNearestEdge(double **adj, int dimension, int start)
 {
