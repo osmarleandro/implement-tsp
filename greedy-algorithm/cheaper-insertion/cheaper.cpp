@@ -11,7 +11,7 @@ using std::find;
 using std::numeric_limits;
 
 #include <iterator>
-using std::copy;
+using std::next;
 
 list<int> generateSubroute(double **adj, int dimension, int start)
 {
@@ -27,24 +27,33 @@ list<int> generateSubroute(double **adj, int dimension, int start)
 int *cheaperInsertion(double **adj, int dimension, int start)
 {
   list<int> route = generateSubroute(adj, dimension, start);
-  size_t iteration = 1;
+  int iterations = 2;
 
-  while (iteration++ < dimension)
+  // iterate while exists city to evalue
+  while (iterations++ <= dimension)
   {
-    int beginEdge = route.front();
-    int endEdge = route.back();
+    double cost, bCost = numeric_limits<double>::infinity();
+    list<int>::iterator i, j, bIter;
+    int bInsertion;
 
-    int bestBeginNeighbor = nearestNeighborEdge(adj, dimension, route, beginEdge);
-    int bestEndNeighbor = nearestNeighborEdge(adj, dimension, route, endEdge);
+    // iteration at the current route
+    for (i = route.begin(); i != route.end(); ++i)
+    {
+      j = next(i, 1);
+      // iteration at the cities list
+      for (size_t k = 1; k <= dimension; k++)
+      {
+        bool visited = find(route.begin(), route.end(), k) != route.end();
+        if (visited) continue;
 
-    double costNeighborBegin = adj[beginEdge][bestBeginNeighbor];
-    double costNeighborEnd = adj[endEdge][bestEndNeighbor];
+        cost = adj[*i][k] + adj[k][*j] - adj[*i][*j];
+        if (cost > bCost) continue;
 
-    if (costNeighborEnd <= costNeighborBegin)
-      route.push_back(bestEndNeighbor);
-
-    else
-      route.push_front(bestBeginNeighbor);
+        bCost = cost;
+        bIter = j;
+      }
+    }
+    route.insert(bIter, *bIter);
   }
   // Converting list to array
   return listToArray(route);
