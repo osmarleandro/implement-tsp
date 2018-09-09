@@ -46,9 +46,9 @@ int main(int argc, char **argv)
   startTime = clock();
   int *ciPath = cheaperInsertion(matrixAdj, dimension, startCity);
   totalTime = timeExecution(startTime);
-  double costCi = cost(ciPath, 2, matrixAdj);
+  double costCi = cost(ciPath, dimension, matrixAdj);
   cout << "\nThe cheaper insertion cost was: " << costCi << endl;
-  see(ciPath, 2);
+  see(ciPath, dimension);
   cout << "Execution time: " << totalTime << " s" << endl;
   /*
   /** 

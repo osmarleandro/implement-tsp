@@ -30,30 +30,38 @@ int *cheaperInsertion(double **adj, int dimension, int start)
   int iterations = 2;
 
   // iterate while exists city to evalue
-  while (iterations++ <= dimension)
+  while (iterations++ < dimension)
   {
     double cost, bCost = numeric_limits<double>::infinity();
     list<int>::iterator i, j, bIter;
     int bInsertion;
-
     // iteration at the current route
-    for (i = route.begin(); i != route.end(); ++i)
+    for (i = route.begin(); i != route.end(); i++)
     {
+      // if iterator j points to end, your element *j is the begin
       j = next(i, 1);
+      j == route.end() ? ++j : j;
+
       // iteration at the cities list
       for (size_t k = 1; k <= dimension; k++)
       {
+        // if the k city was visited, continue to next city
         bool visited = find(route.begin(), route.end(), k) != route.end();
         if (visited) continue;
 
+        // if the current cost is more expensive than best, continue
         cost = adj[*i][k] + adj[k][*j] - adj[*i][*j];
         if (cost > bCost) continue;
 
+        // if the iterator j points to begin, use the iterator i
         bCost = cost;
+        bInsertion = k;
         bIter = j;
       }
     }
-    route.insert(bIter, *bIter);
+    // if the iterator points to begin, return to end for insert
+    bIter == route.begin() ? --bIter : bIter;
+    route.insert(bIter, bInsertion);
   }
   // Converting list to array
   return listToArray(route);
